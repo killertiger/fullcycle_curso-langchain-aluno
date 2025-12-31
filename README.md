@@ -4,6 +4,12 @@ This repository is based on course FullCycle - Curso introdutório ao LangChain
 
 Reference repository: https://github.com/devfullcycle/mba-ia-niv-introducao-langchain
 
+External links:
+- https://www.langchain.com/ - LangChain
+- https://smith.langchain.com/hub - LangChain Hub
+
+- https://smith.langchain.com/hub/hwchase17/react - ReAct prompt created by the LangChain creator
+
 ## Dependencies
 
 - langchain
