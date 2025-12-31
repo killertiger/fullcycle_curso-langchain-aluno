@@ -45,7 +45,8 @@ parts = splitter.create_documents([long_text])
 
 llm = ChatOpenAI(model="gpt-5-mini", temperature=0)
 
-chain_sumarize = load_summarize_chain(llm, chain_type="stuff", verbose=False)
+# Map-Reduce Summarization Chain is usually used for very long texts, such as a book
+chain_sumarize = load_summarize_chain(llm, chain_type="map_reduce", verbose=False)
 
 result = chain_sumarize.invoke({"input_documents": parts})
 

@@ -1,6 +1,8 @@
 from langchain_openai import ChatOpenAI
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain.chains.summarize import load_summarize_chain
+from langchain_core.prompts import PromptTemplate
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.runnables import RunnableLambda
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -40,13 +42,23 @@ a endless song of ambition, struggle, and hope.
 splitter = RecursiveCharacterTextSplitter(
     chunk_size=250, chunk_overlap=70
 )
-
 parts = splitter.create_documents([long_text])
 
 llm = ChatOpenAI(model="gpt-5-mini", temperature=0)
 
-chain_sumarize = load_summarize_chain(llm, chain_type="stuff", verbose=False)
+# LCEL map stage: summarize each chunk
+map_prompt = PromptTemplate.from_template("Write a concise summary of the following text:\n{context}")
+map_chain = map_prompt | llm | StrOutputParser()
 
-result = chain_sumarize.invoke({"input_documents": parts})
+prepare_map_inputs = RunnableLambda(lambda docs: [{"context": d.page_content} for d in docs])
+map_stage = prepare_map_inputs | map_chain.map()
 
+# LCEL reduce stage: combine summaries into one final summary
+reduce_prompt = PromptTemplate.from_template("Combine the following summaries into a single concise summary:\n{context}")
+reduce_chain = reduce_prompt | llm | StrOutputParser()
+
+prepare_reduce_input = RunnableLambda(lambda summaries: {"context": "\n".join(summaries)})
+pipeline = map_stage | prepare_reduce_input | reduce_chain
+
+result = pipeline.invoke(parts)
 print(result)
