@@ -19,9 +19,10 @@ External links:
 - beautifulsoup4
 - pypdf
 - langchain-classic
+- langchain_community
 
 
-pip install langchain langchain-openai langchain-google-genai python-dotenv beautifulsoup4 pypdf langchain-classic
+pip install langchain langchain-openai langchain-google-genai python-dotenv beautifulsoup4 pypdf langchain-classic langchain_community
 
 
 ## Setup
